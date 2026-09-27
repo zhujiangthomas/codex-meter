@@ -35,7 +35,7 @@ enum MeterError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .codexNotFound:
-            return "没有找到 Codex。请确认 ChatGPT 已安装在“应用程序”文件夹。"
+            return "没有找到 Codex 命令行程序。请确认 ChatGPT 已安装，或安装 Codex CLI。"
         case .timeout:
             return "连接 Codex 超时，请稍后重试。"
         case .server(let message):
@@ -134,8 +134,18 @@ enum CodexUsageClient {
     }
 
     private static func codexExecutable() throws -> String {
-        let candidates = [
-            "/Applications/ChatGPT.app/Contents/Resources/codex",
+        let appURLs = [
+            NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.openai.codex"),
+            URL(fileURLWithPath: "/Applications/ChatGPT.app"),
+            FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications/ChatGPT.app")
+        ].compactMap { $0 }
+        let bundled = appURLs.flatMap { app in
+            [
+                app.appendingPathComponent("Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex").path,
+                app.appendingPathComponent("Contents/Resources/codex").path
+            ]
+        }
+        let candidates = bundled + [
             "/opt/homebrew/bin/codex",
             "/usr/local/bin/codex"
         ]

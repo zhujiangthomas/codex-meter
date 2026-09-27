@@ -20,6 +20,8 @@
 - 已安装并登录 ChatGPT/Codex 桌面应用，或已安装 Codex CLI
 - Apple Command Line Tools（用于从源码构建）
 
+小组件会自动查找 ChatGPT 应用内置的 Codex 程序（包括新版和旧版安装位置），也支持 Homebrew 安装的 Codex CLI。
+
 ## 构建
 
 ```zsh
